@@ -2,6 +2,7 @@
   (:require [org.httpkit.server :refer [run-server]]
             [ring.util.response :refer [response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+            [ring.middleware.json :refer [wrap-json-response]]
             [reitit.ring :as ring]
             [reitit.ring.middleware.parameters :as parameters])
   (:gen-class))
@@ -15,13 +16,13 @@
 
 (def router
   (ring/router
-    ["/greeting" {:get greeting-handler
+    ["/greeting" {:get  greeting-handler
                   :name ::greeting}]
     {:data {:middleware [parameters/parameters-middleware
-                         wrap-keyword-params]}}))
-
-(def app 
-  (ring/ring-handler 
+                         wrap-keyword-params
+                         wrap-json-response]}}))
+(def app
+  (ring/ring-handler
     router
     (ring/create-default-handler)))
 
